@@ -1,0 +1,48 @@
+
+# diffusion model from scratch
+
+This repository contains a diffusion model from scratch that is trained on images of Pokemon. The image size (28x28) is relatively small so that the model can be trained on a laptop.
+
+| Training data             |  Model output |
+:-------------------------:|:-------------------------:
+<img src="data/readme/dragonite.png" alt="dragonite" width="100"/>  | <img src="data/readme/output.jpeg" alt="output" width="100"/> 
+
+## overview
+
+- training time on M1 MacBook with MPS enabled ≈ 3h
+- training data: images of of all Pokemon
+- output image size 28x28
+
+## dependecies
+
+```
+pip install torch torchvision numpy tqdm matplotlib
+```
+
+## quick start
+
+**Dataset**: Run the notebook `dataset.ipynb`. This creates a `images.npy` and `labels.npy` in the data directory.
+
+**Training**: In order to train the model you have to run:
+
+```
+python train.py
+```
+
+The training time depends on whether you are using a GPU, MPS on MAC or a CPU. On a MacBook with a M1 Pro chip it takes about 3 hours. The trained model is saved in `weights`.
+
+**Sampling**: Run the notebook `sample.ipynb`. This creates outputs like this:
+
+<img src="data/readme/example_output.gif" alt="model output" width=100%/> 
+
+## todos
+
+- Use Pokemon type embedding to modify output image
+
+## Acknowledgments
+
+This code is modified from [minDiffusion](https://github.com/cloneofsimo/minDiffusion) and [DeepLearning.AI](https://www.deeplearning.ai/short-courses/how-diffusion-models-work/).
+
+Diffusion model is based on [Denoising Diffusion Probabilistic Models](https://arxiv.org/abs/2006.11239) and [Denoising Diffusion Implicit Models](https://arxiv.org/abs/2010.02502).
+
+Training data is taken from [this](https://www.kaggle.com/datasets/vishalsubbiah/pokemon-images-and-types?resource=download) Pokemon image dataset.
