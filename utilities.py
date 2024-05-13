@@ -8,6 +8,7 @@ import os
 import torchvision.transforms as transforms
 from torch.utils.data import Dataset
 from PIL import Image
+import csv
 
 
 class ResidualConvBlock(nn.Module):
@@ -214,25 +215,25 @@ def plot_sample(x_gen_store,n_sample,nrows,save_dir, fn,  w, save=False):
 
 
 class CustomDataset(Dataset):
-    def __init__(self, sfilename, lfilename, transform, null_context=False):
-        self.sprites = np.load(sfilename)
+    def __init__(self, pfilename, lfilename, transform, null_context=False):
+        self.pokemon = np.load(pfilename)
         self.slabels = np.load(lfilename)
-        print(f"images shape: {self.sprites.shape}")
+        print(f"images shape: {self.pokemon.shape}")
         print(f"labels shape: {self.slabels.shape}")
         self.transform = transform
         self.null_context = null_context
-        self.sprites_shape = self.sprites.shape
+        self.pokemon_shape = self.pokemon.shape
         self.slabel_shape = self.slabels.shape
                 
     # Return the number of images in the dataset
     def __len__(self):
-        return len(self.sprites)
+        return len(self.pokemon)
     
     # Get the image and label at a given index
     def __getitem__(self, idx):
         # Return the image and label as a tuple
         if self.transform:
-            image = self.transform(self.sprites[idx])
+            image = self.transform(self.pokemon[idx])
             if self.null_context:
                 label = torch.tensor(0).to(torch.int64)
             else:
@@ -241,7 +242,7 @@ class CustomDataset(Dataset):
 
     def getshapes(self):
         # return shapes of data and labels
-        return self.sprites_shape, self.slabel_shape
+        return self.pokemon_shape, self.slabel_shape
 
 transform = transforms.Compose([
     transforms.ToTensor(),                # from [0,255] to range [0.0,1.0]
@@ -265,3 +266,50 @@ def rgba_to_rgb_with_white_background(image):
                 rgb_pixels[x, y] = (r, g, b)  # otherwise, keep the original color
     
     return rgb_image
+
+def get_types_from_csv(name, csv_file):
+    with open(csv_file, 'r') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            if row['Name'] == name:
+                return row['Type1'], row['Type2']
+    return None, None
+
+def encode_type(type1, type2):
+    types = [
+        'Bug', 'Dark', 'Dragon', 'Electric', 'Fairy', 'Fighting', 'Fire',
+        'Flying', 'Ghost', 'Grass', 'Ground', 'Ice', 'Normal', 'Poison',
+        'Psychic', 'Rock', 'Steel', 'Water'
+    ]
+    
+    encoded_array = np.zeros(len(types), dtype=int)
+    if type1 in types:
+        encoded_array[types.index(type1)] = 1
+    if type2 in types:
+        encoded_array[types.index(type2)] = 1
+    return encoded_array
+
+def encode_types_multiple_times(type1, type2="", num_times=24):
+    types = [
+        'Bug', 'Dark', 'Dragon', 'Electric', 'Fairy', 'Fighting', 'Fire',
+        'Flying', 'Ghost', 'Grass', 'Ground', 'Ice', 'Normal', 'Poison',
+        'Psychic', 'Rock', 'Steel', 'Water'
+    ]
+    
+    # Check if input type1 is valid
+    if type1 not in types:
+        print("Error: Invalid input type1.")
+        return None
+    
+    # Create one-hot encoding for type1
+    encoded_types = np.zeros(len(types), dtype=int)
+    encoded_types[types.index(type1)] = 1
+    
+    # If type2 is not empty and valid, add it to the encoding
+    if type2 != "" and type2 in types:
+        encoded_types[types.index(type2)] = 1
+    
+    # Repeat the encoding for num_times
+    encoded_array = np.tile(encoded_types, (num_times, 1))
+    
+    return encoded_array

@@ -26,7 +26,7 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else 'mps' if torch.
 # device = torch.device("cuda:0" if torch.cuda.is_available() else torch.device('mps') if torch.backends.mps.is_available() else torch.device('cpu'))
 # device = 'cuda' if torch.cuda.is_available() else 'mps' if torch.backends.mps.is_available() else 'cpu'
 n_feat = 256 # 64 hidden dimension feature
-n_cfeat = 5 # context vector is of size 5
+n_cfeat = 18 # context vector is of size 18
 height = 28 # 16x16 image
 save_dir = './weights/'
 data_dir = './data/'
@@ -47,7 +47,7 @@ if __name__ == '__main__':
     nn_model = ContextUnet(in_channels=3, n_feat=n_feat, n_cfeat=n_cfeat, height=height).to(device)
 
     # load dataset and construct optimizer
-    dataset = CustomDataset(data_dir + "images.npy", data_dir + "labels.npy", transform, null_context=True)
+    dataset = CustomDataset(data_dir + "images.npy", data_dir + "labels.npy", transform, null_context=False)
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=1)
     optim = torch.optim.Adam(nn_model.parameters(), lr=lrate)
 

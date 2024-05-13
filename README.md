@@ -10,7 +10,7 @@ This repository contains a diffusion model from scratch that is trained on image
 ## overview
 
 - training time on M1 MacBook with MPS enabled ≈ 3h
-- training data: images of of all Pokemon
+- training data: images of all Pokemon
 - output image size 28x28
 
 ## dependecies
@@ -33,13 +33,13 @@ The training time depends on whether you are using a GPU, MPS on MAC or a CPU. O
 
 **Sampling**: Run the notebook `sample.ipynb`. This creates outputs like this:
 
-<img src="data/readme/example_output.gif" alt="model output" width=100%/> 
+<img src="data/readme/sample_random.gif" alt="model output" width=100%/> 
 
-## todos
+Additionally you can specify the type of Pokemon you want to sample by including a type embedding. Therefore, you can run the notebook `sample_with_type.ipynb`. For example the output for a Pokemon of type Dragon and Flying looks like this:
 
-- Use Pokemon type embedding to modify output image
+<img src="data/readme/sample_dragon_flying.gif" alt="model output" width=100%/> 
 
-## Acknowledgments
+## acknowledgments
 
 This code is modified from [minDiffusion](https://github.com/cloneofsimo/minDiffusion) and [DeepLearning.AI](https://www.deeplearning.ai/short-courses/how-diffusion-models-work/).
 
