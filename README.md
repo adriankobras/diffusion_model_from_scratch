@@ -1,7 +1,7 @@
 
 # diffusion model from scratch
 
-This repository contains a diffusion model from scratch that is trained on images of Pokemon. The image size (28x28) is relatively small so that the model can be trained on a laptop.
+This repository contains a diffusion model from scratch, trained on images of Pokemon. The image size (28x28) is relatively small, so the model can be trained on a laptop.
 
 | Training data             |  Model output |
 :-------------------------:|:-------------------------:
@@ -9,7 +9,7 @@ This repository contains a diffusion model from scratch that is trained on image
 
 ## overview
 
-- training time on M1 MacBook with MPS enabled ≈ 3h
+- training time on M1 Pro MacBook with MPS enabled ≈ 3h
 - training data: images of all Pokemon
 - output image size 28x28
 
@@ -31,11 +31,11 @@ python train.py
 
 The training time depends on whether you are using a GPU, MPS on MAC or a CPU. On a MacBook with a M1 Pro chip it takes about 3 hours. The trained model is saved in `weights`.
 
-**Sampling**: Run the notebook `sample.ipynb`. This creates outputs like this:
+**Sampling**: Running the notebook `sample.ipynb` creates outputs like this:
 
 <img src="data/readme/sample_random.gif" alt="model output" width=100%/> 
 
-Additionally you can specify the type of Pokemon you want to sample by including a type embedding. Therefore, you can run the notebook `sample_with_type.ipynb`. For example the output for a Pokemon of type Dragon and Flying looks like this:
+Additionally, you can specify the type of Pokemon you want to sample by including a type embedding in the notebook `sample_with_type.ipynb`. For example, the output for a Pokemon of type Dragon and Flying looks like this:
 
 <img src="data/readme/sample_dragon_flying.gif" alt="model output" width=100%/> 
 
