@@ -4,6 +4,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
+from torch.utils.tensorboard import SummaryWriter
 from torchvision import models, transforms
 from torchvision.utils import save_image, make_grid
 import matplotlib.pyplot as plt
@@ -25,9 +26,9 @@ beta2 = 0.02
 device = torch.device("cuda:0" if torch.cuda.is_available() else 'mps' if torch.backends.mps.is_available() else 'cpu')
 # device = torch.device("cuda:0" if torch.cuda.is_available() else torch.device('mps') if torch.backends.mps.is_available() else torch.device('cpu'))
 # device = 'cuda' if torch.cuda.is_available() else 'mps' if torch.backends.mps.is_available() else 'cpu'
-n_feat = 256 # 64 hidden dimension feature
+n_feat = 256 # 256 hidden dimension feature
 n_cfeat = 18 # context vector is of size 18
-height = 28 # 16x16 image
+height = 28 # 28x28 image
 save_dir = './weights/'
 data_dir = './data/'
 
@@ -35,6 +36,9 @@ data_dir = './data/'
 batch_size = 100
 n_epoch = 500
 lrate=1e-3
+
+# create a SummaryWriter object
+writer = SummaryWriter('runs/train')
 
 if __name__ == '__main__':
     # construct DDPM noise schedule
@@ -85,6 +89,11 @@ if __name__ == '__main__':
             loss.backward()
             
             optim.step()
+
+        # log data
+        writer.add_scalar('Loss/train', loss, ep)
+        # tensorboard --logdir=runs
+        writer.close()
 
         # save model periodically
         if ep%4==0 or ep == int(n_epoch-1):
