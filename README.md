@@ -1,17 +1,17 @@
 
 # diffusion model from scratch
 
-This repository contains a diffusion model from scratch, trained on images of Pokemon. The image size (28x28) is relatively small, so the model can be trained on a laptop.
+This repository contains a diffusion model from scratch, trained on images of Pokemon. The image size (32x32) is relatively small, so the model can be trained on a laptop.
 
-| Training data             |  Model output |
+| Training data            |  Model output |
 :-------------------------:|:-------------------------:
-<img src="data/readme/dragonite.png" alt="dragonite" width="100"/>  | <img src="data/readme/output.jpeg" alt="output" width="100"/> 
+<img src="data/readme/dragonite.png" alt="dragonite" width="100"/>  | <img src="data/readme/output2.jpeg" alt="output" width="100"/> 
 
 ## overview
 
-- training time on M1 Pro MacBook with MPS enabled ≈ 3h
+- training time on M1 Pro MacBook with MPS enabled ≈ 4h
 - training data: images of all Pokemon
-- output image size 28x28
+- output image size 32x32
 
 ## dependecies
 
@@ -29,7 +29,7 @@ pip install torch torchvision numpy tqdm matplotlib
 python train.py
 ```
 
-The training time depends on whether you are using a GPU, MPS on MAC or a CPU. On a MacBook with a M1 Pro chip it takes about 3 hours. The trained model is saved in `weights`.
+The training time depends on whether you are using a GPU, MPS on MAC or a CPU. On a MacBook with a M1 Pro chip it takes about 4 hours. The trained model is saved in `weights`.
 
 **Sampling**: Running the notebook `sample.ipynb` creates outputs like this:
 
