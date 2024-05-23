@@ -3,7 +3,7 @@ import torch.nn as nn
 import numpy as np
 from torchvision.utils import save_image, make_grid
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation, PillowWriter
+from matplotlib.animation import FuncAnimation, PillowWriter, FFMpegWriter
 import os
 import torchvision.transforms as transforms
 from torch.utils.data import Dataset
@@ -209,8 +209,32 @@ def plot_sample(x_gen_store,n_sample,nrows,save_dir, fn,  w, save=False):
     ani = FuncAnimation(fig, animate_diff, fargs=[nsx_gen_store],  interval=200, blit=False, repeat=True, frames=nsx_gen_store.shape[0]) 
     plt.close()
     if save:
-        ani.save(save_dir + f"{fn}_w{w}.gif", dpi=100, writer=PillowWriter(fps=5))
+        ani.save(save_dir + f"{fn}_w{w}.gif", dpi=300, writer=PillowWriter(fps=10))
         print('saved gif at ' + save_dir + f"{fn}_w{w}.gif")
+    return ani
+
+def plot_sample_mp4(x_gen_store,n_sample,nrows,save_dir, fn,  w, save=False):
+    ncols = n_sample//nrows
+    sx_gen_store = np.moveaxis(x_gen_store,2,4)                               # change to Numpy image format (h,w,channels) vs (channels,h,w)
+    nsx_gen_store = norm_all(sx_gen_store, sx_gen_store.shape[0], n_sample)   # unity norm to put in range [0,1] for np.imshow
+    
+    # create gif of images evolving over time, based on x_gen_store
+    fig, axs = plt.subplots(nrows=nrows, ncols=ncols, sharex=True, sharey=True, figsize=(ncols,nrows))
+    def animate_diff(i, store):
+        print(f'mp4 animating frame {i} of {store.shape[0]}', end='\r')
+        plots = []
+        for row in range(nrows):
+            for col in range(ncols):
+                axs[row, col].clear()
+                axs[row, col].set_xticks([])
+                axs[row, col].set_yticks([])
+                plots.append(axs[row, col].imshow(store[i,(row*ncols)+col]))
+        return plots
+    ani = FuncAnimation(fig, animate_diff, fargs=[nsx_gen_store],  interval=1000, blit=False, repeat=True, frames=nsx_gen_store.shape[0]) 
+    plt.close()
+    if save:
+        ani.save(save_dir + f"{fn}_w{w}.mp4", dpi=1000, writer=FFMpegWriter(fps=60))
+        print('saved MP4 at ' + save_dir + f"{fn}_w{w}.mp4")
     return ani
 
 

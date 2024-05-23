@@ -33,11 +33,11 @@ The training time depends on whether you are using a GPU, MPS on MAC or a CPU. O
 
 **Sampling**: Running the notebook `sample.ipynb` creates outputs like this:
 
-<img src="data/readme/sample_random.gif" alt="model output" width=100%/> 
+<img src="data/samples/ani_run_wrandom.gif" alt="model output" width=100%/> 
 
 Additionally, you can specify the type of Pokemon you want to sample by including a type embedding in the notebook `sample_with_type.ipynb`. For example, the output for a Pokemon of type Dragon and Flying looks like this:
 
-<img src="data/readme/sample_dragon_flying.gif" alt="model output" width=100%/> 
+<img src="data/samples/ani_run_wdragon_flying.gif" alt="model output" width=100%/> 
 
 ## acknowledgments
 

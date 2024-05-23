@@ -24,11 +24,9 @@ beta2 = 0.02
 
 # network hyperparameters
 device = torch.device("cuda:0" if torch.cuda.is_available() else 'mps' if torch.backends.mps.is_available() else 'cpu')
-# device = torch.device("cuda:0" if torch.cuda.is_available() else torch.device('mps') if torch.backends.mps.is_available() else torch.device('cpu'))
-# device = 'cuda' if torch.cuda.is_available() else 'mps' if torch.backends.mps.is_available() else 'cpu'
-n_feat = 256 # 256 hidden dimension feature
+n_feat = 64 # 256 hidden dimension feature
 n_cfeat = 18 # context vector is of size 18
-height = 28 # 28x28 image
+height = 32 # 32x32 image
 save_dir = './weights/'
 data_dir = './data/'
 
@@ -60,8 +58,7 @@ if __name__ == '__main__':
         return ab_t.sqrt()[t, None, None, None] * x + (1 - ab_t[t, None, None, None]) * noise
 
 
-    # training without context info
-
+    # training with context code
     # set into train mode
     nn_model.train()
 
@@ -72,9 +69,14 @@ if __name__ == '__main__':
         optim.param_groups[0]['lr'] = lrate*(1-ep/n_epoch)
         
         pbar = tqdm(dataloader, mininterval=2 )
-        for x, _ in pbar:   # x: images
+        for x, c in pbar:   # x: images  c: context
             optim.zero_grad()
             x = x.to(device)
+            c = c.to(x)
+            
+            # randomly mask out c
+            context_mask = torch.bernoulli(torch.zeros(c.shape[0]) + 0.9).to(device)
+            c = c * context_mask.unsqueeze(-1)
             
             # perturb data
             noise = torch.randn_like(x)
@@ -82,7 +84,7 @@ if __name__ == '__main__':
             x_pert = perturb_input(x, t, noise)
             
             # use network to recover noise
-            pred_noise = nn_model(x_pert, t / timesteps)
+            pred_noise = nn_model(x_pert, t / timesteps, c=c)
             
             # loss is mean squared error between the predicted and true noise
             loss = F.mse_loss(pred_noise, noise)
@@ -99,5 +101,5 @@ if __name__ == '__main__':
         if ep%4==0 or ep == int(n_epoch-1):
             if not os.path.exists(save_dir):
                 os.mkdir(save_dir)
-            torch.save(nn_model.state_dict(), save_dir + f"model_{ep}.pth")
-            print('saved model at ' + save_dir + f"model_{ep}.pth")
+            torch.save(nn_model.state_dict(), save_dir + f"context_model_{ep}.pth")
+            print('saved model at ' + save_dir + f"context_model_{ep}.pth")
